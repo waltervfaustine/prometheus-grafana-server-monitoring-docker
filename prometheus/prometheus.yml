@@ -1,0 +1,34 @@
+# Prometheus Configuration File
+
+# Global configuration settings
+global:
+  # Default interval for scraping targets. Set to 15 seconds in this example.
+  scrape_interval: 15s  
+
+# Scrape configuration: Defines which targets Prometheus should scrape and how to scrape them
+scrape_configs:
+  # Configuration for scraping Prometheus itself
+  - job_name: 'prometheus'  # Name of the job that scrapes the Prometheus server
+    static_configs:
+      - targets: ['localhost:9090']  # Prometheus server itself as a target
+
+  # Configuration for scraping Node Exporter metrics
+  - job_name: 'node'  # Job name for scraping Node Exporter metrics
+    static_configs:
+      - targets: ['icodebible-node-exporter:9100']  # Target for Node Exporter metrics, typically the Node Exporter container
+
+# DOCUMENTATION:
+# 1. **global**: Contains global settings for Prometheus' scraping behavior.
+#    - `scrape_interval`: Defines the default frequency at which Prometheus scrapes data from targets. Here, it's set to 15 seconds.
+#
+# 2. **scrape_configs**: Specifies how and where Prometheus should scrape metrics.
+#    - **job_name**: Provides a unique name for a set of targets, which helps in organizing and identifying them.
+#      - `'prometheus'`: A job to scrape metrics from the Prometheus server itself.
+#      - **static_configs**: Lists static targets (hosts and ports) to be scraped for the specified job.
+#        - `targets`: A list of endpoints (hostnames and ports) to scrape. For example, `'localhost:9090'` is where Prometheus runs on the local machine.
+#      - `'node'`: A job configured to scrape metrics from Node Exporter.
+#        - `targets`: List the endpoints where Node Exporter metrics can be found. Replace `'icodebible-node-exporter:9100'` with the actual hostname and port if different.
+#
+# 3. **Adjustments**: Customize the `targets` section in each job configuration to include the actual endpoints you want Prometheus to monitor. Ensure the ports match those used by your services.
+#
+# 4. **File Location**: Place this configuration file at the path specified in your Docker Compose setup (`./prometheus/prometheus.yml`) to ensure Prometheus can locate and use it correctly.

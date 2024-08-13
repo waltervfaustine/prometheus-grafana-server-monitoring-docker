@@ -1,0 +1,150 @@
+# Docker Compose Configuration for Prometheus and Grafana Monitoring Setup
+
+# Specify the version of Docker Compose file format
+version: "3.8"
+
+# Define the services that will run in the Docker network
+services:
+  # Prometheus service configuration
+  prometheus:
+    # Use the latest stable version of Prometheus from Docker Hub
+    image: prom/prometheus:latest
+    # Assign a name to the Prometheus container for easy identification
+    container_name: icodebible-prometheus
+    # Expose Prometheus on port 9090 of the host machine
+    ports:
+      - "9090:9090"
+    # Mount configuration directory to persist Prometheus settings
+    volumes:
+      - ./prometheus:/etc/prometheus # Map host directory to container for Prometheus configuration
+    # Pass command-line arguments to specify the configuration file
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml' # Path to the Prometheus configuration file
+    # Connect to the specified custom network
+    networks:
+      - icodebible-network
+    # Configure health checks to ensure Prometheus service is healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:9090/-/healthy"
+        ] # Endpoint to check the health status of Prometheus
+      interval: 30s # Frequency of health checks
+      timeout: 10s # Maximum time to wait for a health check response
+      retries: 3 # Number of retries before marking the service as unhealthy
+
+  # Grafana service configuration
+  grafana:
+    # Use the latest stable version of Grafana from Docker Hub
+    image: grafana/grafana:latest
+    # Assign a name to the Grafana container for easy identification
+    container_name: icodebible-grafana
+    # Expose Grafana on port 3000 of the host machine
+    ports:
+      - "3000:3000"
+    # Mount configuration directory to persist Grafana settings
+    volumes:
+      - ./grafana:/etc/grafana # Map host directory to container for Grafana configuration
+    # Set environment variables for Grafana configuration
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin # Admin username for initial login (can be overridden by .env file)
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD} # Admin password (should be securely set in .env file)
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini # Path to Grafana configuration file
+    # Connect to the specified custom network
+    networks:
+      - icodebible-network
+    # Ensure Grafana starts only after Prometheus is up and running
+    depends_on:
+      - prometheus
+    # Configure health checks to ensure Grafana service is healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://localhost:3000/api/health"
+        ] # Endpoint to check the health status of Grafana
+      interval: 30s # Frequency of health checks
+      timeout: 10s # Maximum time to wait for a health check response
+      retries: 3 # Number of retries before marking the service as unhealthy
+
+  # # CouchDB Exporter service configuration
+  # couchdb_exporter:
+  #   # Use the CouchDB Prometheus Exporter Docker image
+  #   image: gesellix/couchdb-prometheus-exporter
+  #   # Assign a name to the CouchDB Exporter container
+  #   container_name: icodebible-couchdb-exporter
+  #   # Set environment variables for CouchDB exporter configuration
+  #   environment:
+  #     - COUCHDB_URI=http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@icodebible-couchdb:5984 # URI for CouchDB connection
+  #   # Expose CouchDB Exporter on port 9984 of the host machine
+  #   ports:
+  #     - "9984:9984"
+  #   # Ensure CouchDB Exporter starts only after Grafana and Prometheus are up and running
+  #   depends_on:
+  #     - grafana
+  #     - prometheus
+  #   # Connect to the specified custom network
+  #   networks:
+  #     - icodebible-network
+
+  # cAdvisor service configuration
+  cadvisor:
+    # Use the cAdvisor Docker image for container monitoring
+    image: google/cadvisor:latest
+    # Assign a name to the cAdvisor container
+    container_name: icodebible-cadvisor
+    # Mount necessary directories for cAdvisor to monitor containers
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    # Ensure cAdvisor starts only after Grafana and Prometheus are up and running
+    depends_on:
+      - grafana
+      - prometheus
+    # Expose cAdvisor on port 8080 of the host machine
+    ports:
+      - "8080:8080"
+    # Connect to the specified custom network
+    networks:
+      - icodebible-network
+
+  # Node Exporter service configuration
+  node_exporter:
+    # Use the Node Exporter Docker image for monitoring host metrics
+    image: prom/node-exporter
+    # Assign a name to the Node Exporter container
+    container_name: icodebible-node-exporter
+    # Expose Node Exporter on port 9100 of the host machine
+    ports:
+      - "9100:9100"
+    # Ensure Node Exporter starts only after Grafana and Prometheus are up and running
+    depends_on:
+      - grafana
+      - prometheus
+    # Connect to the specified custom network
+    networks:
+      - icodebible-network
+
+# Define networks for the services
+networks:
+  icodebible-network:
+    external: true # Use an existing external network named 'icodebible-network'
+
+# DOCUMENTATION:
+# 1. This Docker Compose file uses version "3.8" for compatibility and advanced features.
+# 2. Configures essential monitoring tools: Prometheus, Grafana, CouchDB Exporter, cAdvisor, and Node Exporter.
+# 3. Prometheus is exposed on port 9090 and Grafana on port 3000 of the host machine.
+# 4. Volumes are set up to persist configuration data for Prometheus and Grafana.
+# 5. Environment variables are used for setting up Grafana credentials securely.
+# 6. Each service is connected to a custom network named 'icodebible-network' to enable communication between them.
+# 7. Health checks ensure that Prometheus and Grafana are properly monitored for availability.
+# 8. The `depends_on` directive ensures that services start in the correct order.
+# 9. Adjust the configuration, volumes, and environment variables as needed to fit specific deployment requirements.
+# 10. Ensure that the custom network 'icodebible-network' exists or is properly configured for external use.
