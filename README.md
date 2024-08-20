@@ -6,17 +6,17 @@ Project Folder Structure
 Before we dive into the setup process, let's look at the folder structure you will need. Each file and folder has a specific role in the setup:
 
 ```
-    prometheus-grafana-server-monitoring-docker/
-    ├── grafana/
-    │ └── grafana.ini
-    ├── prometheus/
-    │ └── prometheus.yml
-    ├── .env
-    ├── build.sh
-    ├── docker-compose.yml
-    ├── LICENSE
-    ├── README.md
-    └── .gitignore
+prometheus-grafana-server-monitoring-docker/
+├── grafana/
+│ └── grafana.ini
+├── prometheus/
+│ └── prometheus.yml
+├── .env
+├── build.sh
+├── docker-compose.yml
+├── LICENSE
+├── README.md
+└── .gitignore
 ```
 
 ## Folder Structure
@@ -249,7 +249,7 @@ If you prefer to set up Grafana and Prometheus from scratch using the informatio
 
 2. Set up the folder structure and configuration files as outlined below:
 
-```yaml
+    ```yaml
     prometheus-grafana-server-monitoring-docker/
     ├── grafana/
     │   └── grafana.ini
@@ -273,7 +273,7 @@ If you prefer to set up Grafana and Prometheus from scratch using the informatio
     │
     └── README.md
     #   - Documentation file, providing an overview of the project, setup instructions, usage guidelines, and other relevant information.
-```
+    ```
 
 Follow the explanations provided in the article to populate each file with the required configurations.
 
@@ -283,15 +283,15 @@ Follow the explanations provided in the article to populate each file with the r
 If you prefer to start with a pre-configured setup and make final adjustments:
 1. Clone the pre-configured GitHub repository to your local machine:
 
-```bash
-  #!/bin/bash
+    ```bash
+    #!/bin/bash
 
-  # Clone the repository from the specified GitHub URL
-  git clone https://github.com/yourusername/prometheus-grafana-server-monitoring-docker.git
+    # Clone the repository from the specified GitHub URL
+    git clone https://github.com/yourusername/prometheus-grafana-server-monitoring-docker.git
 
-  # Move into the cloned repository's directory
-  cd prometheus-grafana-server-monitoring-docker
-```
+    # Move into the cloned repository's directory
+    cd prometheus-grafana-server-monitoring-docker
+    ```
 
 
 2. Review and customize the configuration files based on your specific requirements. Make any necessary adjustments to grafana.ini, prometheus.yml, .env, docker-compose.yml, and other files as needed.
@@ -300,7 +300,7 @@ If you prefer to start with a pre-configured setup and make final adjustments:
 #### Step 2: Configure Environment Variables
 Regardless of which option you chose above, create a .env file in the root directory of your project and add the following:
 
-```.env
+  ```dotenv
   # Environment Variables from .env file
 
   COMPOSE_PROJECT_NAME=icodebible
@@ -312,7 +312,7 @@ Regardless of which option you chose above, create a .env file in the root dire
   GF_SECURITY_ADMIN_PASSWORD=INSERT_YOUR_DESIRED_STRONG_PASSWORD
   #   - Sets the Grafana admin password using an environment variable from the .env file.
   #   - Ensure to replace 'INSERT_YOUR_DESIRED_STRONG_PASSWORD' with a secure password of your choice.
-```
+  ```
 
 #### Step 3: Customize Grafana Configuration
 Edit the grafana/grafana.ini file to suit your needs. For example, you can disable user registration and adjust security settings.
@@ -323,12 +323,12 @@ Edit the prometheus/prometheus.yml file to define your scrape targets and other 
 #### Step 5: Build and Start the Docker Containers
 Run the build.sh script to build and start the Docker containers:
 
-```bash
-#!/bin/bash
+  ```bash
+  #!/bin/bash
 
-# Execute the build script
-./build.sh
-```
+  # Execute the build script
+  ./build.sh
+  ```
 This script uses Docker Compose to set up the Grafana and Prometheus services as defined in the docker-compose.yml file.
 
 #### Step 6: Access Grafana and Add the Node Exporter Dashboard
