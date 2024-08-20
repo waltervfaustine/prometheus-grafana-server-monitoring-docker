@@ -83,14 +83,19 @@ The `.env` file is used to define environment variables that are utilized in you
 # Environment Variables for Docker Setup
 
 COMPOSE_PROJECT_NAME=icodebible
-#   - Defines the project name for Docker Compose, which affects the names of containers and networks.
+#   - Defines the project name for Docker Compose. This name is used as a prefix for containers, networks, and other resources created by Docker Compose.
+#   - Replace 'REPLACE_WITH_YOUR_DESIRED_ORGANIZATION_OR_COMPANY_NAME' with a name that uniquely identifies your project or organization.
+#   - Example: icodebible
 
 GF_SECURITY_ADMIN_USER=admin
-#   - Sets the Grafana admin username to 'admin' for initial login.
+#   - Specifies the username for the Grafana admin account. Default is 'admin'.
+#   - This username is used for logging into the Grafana web interface initially.
+#   - You can change it to any username you prefer.
 
 GF_SECURITY_ADMIN_PASSWORD=INSERT_YOUR_DESIRED_STRONG_PASSWORD
-#   - Sets the Grafana admin password using an environment variable from the .env file.
-#   - Ensure to replace 'INSERT_YOUR_DESIRED_STRONG_PASSWORD' with a secure password.
+#   - Sets the password for the Grafana admin user. This should be a strong and secure password.
+#   - Replace 'REPLACE_WITH_YOUR_DESIRED_STRONG_PASSWORD' with a strong password of your choice to ensure secure access to Grafana.
+#   - It is recommended to use a password manager to generate and store strong passwords.
 ```
 
 ### 4. `build.sh`
